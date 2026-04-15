@@ -1,0 +1,60 @@
+{
+    // So that they don't appear in the explorer
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    // So that they don't appear in the explorer
+    "files.exclude": {
+        "**/.venv": true,
+        "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/node_modules": true,
+        "**/.serverless": true
+    },
+    // So that their contents don't appear when searching across files
+    "search.exclude": {
+        "**/.venv": true,
+        "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/node_modules": true,
+        "**/.serverless": true,
+        "**/out_long": true,
+        "**/out_short": true
+    },
+    // Use old merge conflict editor
+    "git.mergeEditor": false,
+    // python settings
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSaveMode": "file",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always",
+            "source.fixAll": "always"
+        },
+        "editor.rulers": [
+            100
+        ],
+        "editor.trimAutoWhitespace": true
+    },
+    "isort.args": [
+        "--profile",
+        "black",
+        "--multi-line",
+        "3",
+        "--trailing-comma",
+        "--force-grid-wrap",
+        "0",
+        "--use-parentheses",
+        "--line-length",
+        "100"
+    ],
+    "flake8.args": [
+        "--max-line-length=100",
+        "--max-complexity=10"
+    ],
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.useLibraryCodeForTypes": true,
+}
