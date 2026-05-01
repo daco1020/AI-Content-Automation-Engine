@@ -54,7 +54,7 @@ SCRIPT_PROMPT: str = """# 📝 PROMPT MAESTRO — AGENTE GUIONISTA FINANCIERO (S
 - **Uso del Color:** Utiliza el color de forma estratégica para resaltar elementos financieros clave (ej: billetes verdes, flechas de crecimiento, gráficas coloridas) y para dar vida al personaje, manteniendo siempre la estética de dibujo a mano.
 
 ### 🔴 ESTRUCTURA Y SALIDA
-- **Extensión:** Entre 12 y 16 escenas.
+- **Extensión:** Exactamente 15 escenas.
 - **Cierre:** Termina con una frase motivacional poderosa o un dato impactante que invite a actuar.
 
 ### 🟠 IDIOMAS (ESTRICTO)

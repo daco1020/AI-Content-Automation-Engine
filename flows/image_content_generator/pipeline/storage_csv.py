@@ -32,6 +32,13 @@ class CsvStore(CsvProcessor):
         row = self.get_row(index)
         return self._map_row(row)
 
+    def get_by_id(self, idea_id: int) -> IdeaRaw | None:
+        df = self.read_all()
+        idx = cast(Any, df.index)[df[Column.ID.value] == idea_id]
+        if len(idx) == 0:
+            return None
+        return self.get_by_index(int(idx[0]))
+
     def get_first_by_state(self, state: State) -> IdeaRaw | None:
         df = self.read_all()
 

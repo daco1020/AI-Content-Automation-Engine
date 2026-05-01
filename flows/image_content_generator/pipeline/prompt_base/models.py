@@ -85,11 +85,26 @@ class ImagePrompt(BaseModel):
 
         return ". ".join(prompt_parts) + "."
 
+    @property
+    def pixabay_query(self) -> str:
+        """
+        Builds a simplified search query for Pixabay based on the main subject and environment.
+        """
+        query_parts: List[str] = []
+        if self.subjects:
+            # Take the first subject's description as the main keyword
+            query_parts.append(self.subjects[0].description)
+        
+        if self.environment:
+            query_parts.append(self.environment)
+            
+        return " ".join(query_parts)
+
 
 class Scene(BaseModel):
     scene_number: int = Field(description="Sequential number of the scene (Integer)")
     image_prompt: ImagePrompt = Field(description="Structured details for image generation")
-    narration: str = Field(description="Spoken narration for this scene in SPANISH (LATAM)")
+    narration: str = Field(description="Spoken narration for this scene in the REQUESTED LANGUAGE")
 
 
 class VideoScript(BaseModel):
@@ -141,19 +156,30 @@ class VideoScript(BaseModel):
         return schema_block
 
     @classmethod
-    def get_full_script_prompt(cls, selected_idea_data: BaseIdea) -> str:
+    def get_full_script_prompt(
+        self, 
+        selected_idea_data: BaseIdea, 
+        language: str = "SPANISH (LATAM)",
+        style: str = "Modern cinematic style"
+    ) -> str:
         """
         Formats the script prompt using the provided selected idea data
         and appends the mandatory JSON schema.
         """
-        base_prompt = cls.SCRIPT_PROMPT.strip()
+        base_prompt = self.SCRIPT_PROMPT.strip()
 
         base_context = (
             "\n\nTU IDEA DE BASE (CONTEXTO EN JSON):\n"
             f"{selected_idea_data.model_dump_json(indent=2)}\n"
         )
+        
+        custom_instructions = (
+            f"\n\n**INSTRUCCIONES DE PERSONALIZACIÓN:**\n"
+            f"- IDIOMA DE NARRACIÓN: {language}\n"
+            f"- ESTILO VISUAL: {style}\n"
+        )
 
-        return base_prompt + base_context + cls.get_json_format_instructions()
+        return base_prompt + base_context + custom_instructions + self.get_json_format_instructions()
 
     @classmethod
     def get_chunked_script_prompt(

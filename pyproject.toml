@@ -16,6 +16,10 @@ pillow = "^12.1.0"
 pydantic = "^2.12.5"
 selenium = "^4.41.0"
 pydantic-settings = "^2.13.1"
+fastapi = "^0.136.1"
+uvicorn = "^0.46.0"
+edge-tts = "^7.2.8"
+gtts = "^2.5.4"
 
 [tool.poetry.group.dev.dependencies]
 black = "^26.3.1"

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Engine | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <main class="container">
+        <header>
+            <div class="logo">
+                <span class="gradient-text">ANTIGRAVITY</span>
+                <span class="sub-logo">Content Engine</span>
+            </div>
+            <div class="status-badge" id="global-status">
+                <span class="dot"></span> IDLE
+            </div>
+        </header>
+
+        <section class="hero">
+            <h1>Crea Videos Virales <br><span class="highlight">en un Click.</span></h1>
+            <p>Generación automática de guiones, imágenes, audio y video con IA de última generación.</p>
+            
+            <div class="action-panel">
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Idioma</label>
+                        <select id="lang-select">
+                            <option value="SPANISH (LATAM)">Español (Latam)</option>
+                            <option value="ENGLISH">Inglés</option>
+                            <option value="FRENCH">Francés</option>
+                            <option value="GERMAN">Alemán</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Estilo Visual</label>
+                        <input type="text" id="style-input" placeholder="Ej: Cinematic photorealistic..." value="Modern cinematic style">
+                    </div>
+                    <div class="input-group">
+                        <label>Categoría Temática</label>
+                        <select id="category-select">
+                            <option value="RANDOM">🎲 Aleatoria (Automático)</option>
+                            <option value="FinancesHandler">💰 Finanzas y Negocios</option>
+                            <option value="TerrorHandler">👻 Historias de Terror</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Generador de Imágenes</label>
+                        <select id="image-gen-select">
+                            <option value="pixabay">Pixabay (Imágenes de Stock)</option>
+                            <option value="workflows/videos-terror-story">IA: Terror Workflows (Gemini)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Cantidad de Videos (Serie)</label>
+                        <input type="number" id="quantity-input" min="1" max="10" value="1">
+                    </div>
+                    <div class="input-group full-width">
+                        <label>Tema o Idea Específica (Opcional)</label>
+                        <textarea id="topic-input" placeholder="Ej: La importancia de la educación financiera en niños..."></textarea>
+                    </div>
+                </div>
+                <button id="generate-btn" class="primary-btn">
+                    <span class="icon">🚀</span> Iniciar Generación Automática
+                </button>
+            </div>
+        </section>
+
+        <section class="dashboard-grid">
+            <div class="card progress-card">
+                <h3>Progreso del Pipeline</h3>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="step-info">
+                        <span id="current-step">Esperando inicio...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                </div>
+                
+                <div class="logs-container" id="logs">
+                    <div class="log-entry system">Sistema listo para producción...</div>
+                </div>
+            </div>
+
+            <div class="card preview-card" id="preview-section">
+                <h3>Último Video Generado</h3>
+                <div class="video-placeholder" id="video-placeholder">
+                    <div class="loading-spinner hidden" id="spinner"></div>
+                    <p id="placeholder-text">Los resultados aparecerán aquí</p>
+                    <video id="final-video" controls class="hidden">
+                        Tu navegador no soporta el tag de video.
+                    </video>
+                </div>
+                <div class="video-actions hidden" id="video-actions">
+                    <a href="#" id="download-link" class="primary-btn small" download>
+                        <span class="icon">📥</span> Descargar Video
+                    </a>
+                    <a href="#" id="open-link" class="secondary-btn small" target="_blank">
+                        <span class="icon">📂</span> Abrir Video
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

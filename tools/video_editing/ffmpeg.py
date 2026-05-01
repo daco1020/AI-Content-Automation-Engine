@@ -3,6 +3,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 from typing import List
+from PIL import Image
 
 from tools.common.base_model import BaseModelTool
 from tools.common.messenger import Messenger
@@ -169,9 +170,13 @@ class FFmpegTool(BaseModelTool):
         f1 = total_frames * 0.3
         f2 = total_frames * 0.7
 
-        # Infer dimensions from the source image
-        width = self.get_video_width(img_path)
-        height = self.get_video_height(img_path)
+        # Infer dimensions from the source image using Pillow
+        with Image.open(img_path) as img:
+            width, height = img.size
+
+        # Enforce even dimensions (required by libx264)
+        width = width if width % 2 == 0 else width - 1
+        height = height if height % 2 == 0 else height - 1
 
         # Zoom expression (per frame)
         # Part 1: 1.0 -> 1.2 | Part 2: 1.2 | Part 3: 1.2 -> 1.0
@@ -183,13 +188,10 @@ class FFmpegTool(BaseModelTool):
         pos_filter = "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
         zoom_filter = f"zoompan=z='{z_expr}':d=1:{pos_filter}:s={width}x{height},format=yuv420p"
 
-        # Rotation filter: constant soft swing
-        rotate_filter = "rotate='1*PI/180*sin(2*PI*t/3)'"
-
         cmd = f"""
         ffmpeg -y -loop 1 -i {shlex.quote(str(img_path))} \
           -i {shlex.quote(str(audio_path))} \
-          -vf "{zoom_filter},{rotate_filter}" \
+          -vf "{zoom_filter}" \
           -shortest \
           -c:v libx264 -c:a aac -pix_fmt yuv420p {shlex.quote(str(out_path))}
         """

@@ -69,24 +69,43 @@ class GeminiVideoGenerator(GeminiBase):
                 mime_type="image/png"
             )
 
-        # 3. Trigger Asynchronous Generation
-        operation = self.client.models.generate_videos(
-            model=self.video_model,
-            prompt=prompt,
-            image=image_input,
-            config=config
-        )
+        # 3. Trigger Asynchronous Generation with internal retry for Code 13
+        max_internal_retries = 3
+        for attempt in range(max_internal_retries):
+            try:
+                operation = self.client.models.generate_videos(
+                    model=self.video_model,
+                    prompt=prompt,
+                    image=image_input,
+                    config=config
+                )
 
-        # 4. Polling for Completion
-        # Video generation is a heavy process. We poll every 15 seconds.
-        while not operation.done:
-            Messenger.info("⏳ Waiting for video generation (polling)...")
-            time.sleep(15)
-            operation = self.client.operations.get(operation)
+                # 4. Polling for Completion
+                # Video generation is a heavy process. We poll every 15 seconds.
+                while not operation.done:
+                    Messenger.info(f"⏳ Waiting for video generation (polling, attempt {attempt+1})...")
+                    time.sleep(15)
+                    operation = self.client.operations.get(operation)
 
-        # 5. Result Validation
-        if operation.error:
-            raise RuntimeError(f"❌ Video generation failed: {operation.error}")
+                # 5. Result Validation
+                if operation.error:
+                    # Check if it's an internal error (code 13)
+                    error_str = str(operation.error)
+                    if "'code': 13" in error_str and attempt < max_internal_retries - 1:
+                        Messenger.warning(f"⚠️ Internal Server Error (13) detected. Retrying in 30s... (Attempt {attempt+1}/{max_internal_retries})")
+                        time.sleep(30)
+                        continue
+                    raise RuntimeError(f"❌ Video generation failed: {operation.error}")
+                
+                # If we reach here, operation succeeded
+                break
+
+            except Exception as e:
+                if attempt < max_internal_retries - 1:
+                    Messenger.warning(f"⚠️ Connection error during generation: {str(e)}. Retrying...")
+                    time.sleep(10)
+                    continue
+                raise e
 
         # 6. Success: Download and Persist
         # The operation response contains metadata and the generated video object.

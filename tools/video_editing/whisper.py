@@ -26,6 +26,7 @@ class WhisperTool(BaseModelTool):
     def _get_transcription_json(
         self,
         audio_path: Path,
+        language: str = "es",
     ) -> WhisperTranscription:
         """
         Runs whisper-cli (if needed) and returns the parsed JSON content.
@@ -36,7 +37,7 @@ class WhisperTool(BaseModelTool):
             cmd_args = [
                 "whisper-cli",
                 "-m", self.DEFAULT_MODEL,
-                "-l", "es",
+                "-l", language,
                 "-ojf",
                 "-f", str(audio_path)
             ]
@@ -55,13 +56,14 @@ class WhisperTool(BaseModelTool):
 
     def get_transcription_segments(
         self,
-        audio_path: Path
+        audio_path: Path,
+        language: str = "es"
     ) -> List[WhisperTranscriptionSegment]:
         """
         Transcribes audio and returns a list of segments with text and timestamps.
         Each segment: {"text": str, "start": float, "end": float} (times in seconds)
         """
-        data = self._get_transcription_json(audio_path)
+        data = self._get_transcription_json(audio_path, language=language)
         segments: List[WhisperTranscriptionSegment] = []
         for s in data.transcription:
             segments.append(WhisperTranscriptionSegment(
@@ -76,11 +78,12 @@ class WhisperTool(BaseModelTool):
         self,
         audio_path: Path,
         output_srt: Path,
+        language: str = "es"
     ) -> None:
         """
         Generates SRT file from audio file.
         """
-        data = self._get_transcription_json(audio_path)
+        data = self._get_transcription_json(audio_path, language=language)
 
         # 1. Extract and merge tokens into words
         tokens = [

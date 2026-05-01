@@ -46,6 +46,7 @@ class BasePromptManager(BaseModel):
         self,
         whisper_segments: Sequence[WhisperTranscriptionSegment],
         script_scenes: Sequence[str],
+        language: str = "SPANISH (LATAM)"
     ) -> str:
         """Formats the alignment prompt."""
         whisper_data = "\n".join([
@@ -59,5 +60,6 @@ class BasePromptManager(BaseModel):
         return self.ALIGNMENT_PROMPT.format(
             whisper_data=whisper_data,
             scenes_data=scenes_data,
-            expected_count=len(script_scenes)
+            expected_count=len(script_scenes),
+            language=language
         )
